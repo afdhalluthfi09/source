@@ -1,0 +1,124 @@
+<script src="d3.min.js"></script>
+<script src="topojson.js"></script>
+<script src="colorbrewer.js"></script>
+<link rel="stylesheet" href="colorbrewer.css">
+
+<style>
+.desa {
+  fill: #F2C06D;
+  stroke: #1800F2;
+  stroke-width:1.3px;
+}
+.desa:hover {
+        fill: #666;
+    }
+div.tooltip {
+     color: #222;
+     background-color: #fff;
+     padding: .5em;
+     text-shadow: #f5f5f5 0 1px 0;
+     border-radius: 2px;
+     opacity: 0.9;
+     position: absolute;
+}
+ .hidden {
+        display: none;
+ }
+</style>
+
+<body>
+<div id="peta"></div>
+
+<script>
+var tinggi= 450,
+    lebar = 550,
+    active = d3.select(null);
+
+var svg = d3.select("#peta").append("svg")
+  .attr("width", lebar)
+  .attr("height",tinggi);
+
+var fill = d3.scale.threshold()
+    .domain([50,100,200,300,400,500])
+    .range(colorbrewer.Reds[7]);
+
+var proyeksi = d3.geo.mercator()
+  .center([110.18,-7.03])
+  .scale(60000)
+  .translate([lebar/2, tinggi/2])
+
+var zoom = d3.behavior.zoom()
+        .translate([0,0])
+        .scale(1)
+        .scaleExtent([1,15])
+    .on("zoom",function() {
+          g
+          .style("stroke-width",1.5 / d3.event.scale + "px")
+          .attr("transform","translate("+
+            d3.event.translate.join(",")+")scale("+d3.event.scale+")");
+          g.selectAll("path")
+            .attr("d", path.projection(proyeksi));
+  });
+
+svg.call(zoom);
+
+  
+
+function clicked(d) {
+  if (active.node() === this) return reset();
+  active.classed("active", false);
+  active = d3.select(this).classed("active", true);
+
+  var bounds = path.bounds(d),
+      dx = bounds[1][0] - bounds[0][0],
+      dy = bounds[1][1] - bounds[0][1],
+      x = (bounds[0][0] + bounds[1][0]) / 2,
+      y = (bounds[0][1] + bounds[1][1]) / 2,
+      scale = .9 / Math.max(dx / lebar, dy / tinggi),
+      translate = [lebar / 2 - scale * x, tinggi / 2 - scale * y];
+
+  svg.transition()
+      .duration(750)
+      .call(zoom.translate(translate).scale(scale).event);
+}
+
+function reset() {
+  active.classed("active", false);
+  active = d3.select(null);
+
+  svg.transition()
+      .duration(750)
+      .call(zoom.translate([0, 0]).scale(1).event);
+}
+
+function stopped() {
+  if (d3.event.defaultPrevented) d3.event.stopPropagation();
+}
+
+var path = d3.geo.path()
+  .projection(proyeksi);
+var tooltip = d3.select('body').append('div')
+    .attr('class', 'hidden tooltip');
+
+var g = svg.append("g");
+
+d3.json("map.topojson", function(err, kendal){
+  console.log(kendal)
+  g.selectAll("path")
+    .data(topojson.feature(kendal, kendal.objects.collection).features)
+    .enter().append("path")
+    .attr("class","desa")
+    // .attr("id",function(d){return d.properties.kode_kec})
+    .attr("d", path)
+    // .on("click",clicked)
+});
+  
+d3.csv('data.csv', function(d){
+  d.forEach(function(i){
+    d3.select("#"+i.kode_kec).style('fill',fill(i.jumlah)).attr('title',i.jumlah);
+    //$("#"+i.kode_kec).css('fill',fill(i.jumlah));
+    //document.getElementById(i.kode_kec).style.fill=fill(i.jumlah);
+  })
+});
+</script>
+</body>

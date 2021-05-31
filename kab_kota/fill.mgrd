@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SAGA_METADATA>
+  <HISTORY saga-version="2.3.2">
+    <MODULE library="ta_preprocessor" id="4" name="Fill Sinks (Wang &amp; Liu)">
+      <OPTION type="grid_system" id="PARAMETERS_GRID_SYSTEM" name="Grid system">
+        <CELLSIZE>0.0000750075</CELLSIZE>
+        <XMIN>115.5000375038</XMIN>
+        <XMAX>115.7499624938</XMAX>
+        <YMIN>-3.4999624962</YMIN>
+        <YMAX>-3.2500375062</YMAX>
+      </OPTION>
+      <OPTION type="double" id="MINSLOPE" name="Minimum Slope [Degree]">0.010000</OPTION>
+      <INPUT type="grid" id="ELEV" name="DEM" system="PARAMETERS_GRID_SYSTEM">
+        <MODULE library="io_gdal" id="0" name="Import Raster">
+          <OPTION type="file" id="FILES" name="Files">"C:/Users/LOGIC/AppData/Local/Temp/processing_zmgOnF/a65c38d3e2f5484fb8af795189194a1d/OUTPUT.tif"</OPTION>
+          <OPTION type="text" id="SELECTION" name="Select from Multiple Bands"/>
+          <OPTION type="boolean" id="SELECT_SORT" name="Alphanumeric Sorting">TRUE</OPTION>
+          <OPTION type="boolean" id="TRANSFORM" name="Transformation">TRUE</OPTION>
+          <OPTION type="choice" id="RESAMPLING" name="Resampling" index="3">B-Spline Interpolation</OPTION>
+          <OUTPUT type="grid_list" id="GRIDS" name="Grids">OUTPUT</OUTPUT>
+        </MODULE>
+      </INPUT>
+      <OUTPUT type="grid" id="FILLED" name="Filled DEM">Reprojected [no sinks]</OUTPUT>
+    </MODULE>
+  </HISTORY>
+  <SOURCE>
+    <FILE>D:\tempat_testing\source\kab_kota\fill.sgrd</FILE>
+    <DATABASE></DATABASE>
+    <PROJECTION>
+      <OGC_WKT>PROJCS["WGS 84 / UTM zone 50S",GEOGCS["WGS 84",DATUM["WGS_1984",SPHEROID["WGS 84",6378137,298.257223563,AUTHORITY["EPSG","7030"]],AUTHORITY["EPSG","6326"]],PRIMEM["Greenwich",0,AUTHORITY["EPSG","8901"]],UNIT["degree",0.0174532925199433,AUTHORITY["EPSG","9122"]],AUTHORITY["EPSG","4326"]],PROJECTION["Transverse_Mercator"],PARAMETER["latitude_of_origin",0],PARAMETER["central_meridian",117],PARAMETER["scale_factor",0.9996],PARAMETER["false_easting",500000],PARAMETER["false_northing",10000000],UNIT["metre",1,AUTHORITY["EPSG","9001"]],AXIS["Easting",EAST],AXIS["Northing",NORTH],AUTHORITY["EPSG","32750"]]</OGC_WKT>
+      <PROJ4>+init=epsg:32750 +proj=tmerc +a=6378137.000000 +b=6356752.314245 +lat_0=0 +lon_0=117 +k_0=0.9996 +x_0=500000 +y_0=10000000 +no_defs</PROJ4>
+      <EPSG>-1</EPSG>
+    </PROJECTION>
+  </SOURCE>
+  <DESCRIPTION></DESCRIPTION>
+</SAGA_METADATA>

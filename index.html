@@ -24,6 +24,17 @@
         opacity: 0.9;
         position: absolute;
     }
+    svg{
+            background-color: #efefee;
+        }
+        .country{
+            fill: #cccc;
+            stroke: #3333;
+            stroke-width: 0.5;
+        }
+        .selected{
+            fill: yellow;
+        }
 </style>
 
 <body>
@@ -37,33 +48,73 @@
             .attr('height', height);
         var tooltip = d3.select('body').append('div')
             .attr('class', 'hidden tooltip');
-        d3.json('kendal.json', function (err, can) {
+
+        var projection = d3.geoMercator()
+                            .center([110.18, -7.03])
+                            .scale(60000)
+                            .translate([width / 2, height / 2]);
+        var path =d3.geoPath()
+                    .projection(projection);
+       
+
+
+        d3.json('map.json', function (err, can) {
             if (err) return console.error(err);
-            var projection = d3.geoMercator()
-                .center([110.18, -7.03])
-                .scale(800)
-                .translate([0.65 * width, 0.10 * height]);
-            var path = d3.geoPath()
-                .projection(projection);
-            var provinces = svg.selectAll('.province')
-                .data(can.features).enter();
-            provinces.append('path')
-                .attr('class', function (d) {
-                    return 'province ' + d.properties.kec_kendal;
-                })
-                .attr('d', path)
-                .on('mousemove', function (d) {
-                    var mouse = d3.mouse(svg.node()).map(function (d) {
-                        return parseInt(d);
-                    });
-                    tooltip.classed('hidden', false)
-                        .attr('style', 'left:' + (mouse[0] + 15) +
-                            'px; top:' + (mouse[1] - 35) + 'px')
-                        .html(d.properties.NAME);
-                })
-                .on('mouseout', function () {
-                    tooltip.classed('hidden', true);
-                });
+            console.log(can)
+            var kab = topojson.feature(can,can.objects.collection).features;
+            console.log(kab)
+
+            svg.selectAll(".country")
+               .data(kab)
+               .enter().append("path")
+               .attr("class","country")
+               .attr("d",path)
+            //    .on("mouseover",function(d){
+            //         console.log(d)
+            //         d3.select(this).classed('selected',true)
+            //    })
+            //    .on("mousemove",function(d){
+            //        var mouse = d3.mouse(svg.node()).map(function(d){
+            //            return parseInt(d)
+            //        })
+            //        tooltip.classed('hidden', false)
+            //               .attr('style', 'left:' + (mouse[0] + 15) +
+            //                         'px; top:' + (mouse[1] - 35) + 'px')
+            //                     .html(d.properties.DESA,d.properties.KECAMATAN);
+            //    })
+            //    .on("mouseout",function(d){
+            //         console.log(d)
+            //         d3.select(this).classed('selected',false)
+            //         tooltip.classed('hidden', true);
+            //    })
+               
+            
         });
+     
     </script>
+    <!-- var projection = d3.geoMercator()
+    .center([110.18, -7.03])
+    .scale(800)
+    .translate([0.65 * width, 0.10 * height]);
+var path = d3.geoPath()
+    .projection(projection);
+var provinces = svg.selectAll('.province')
+    .data(can.features).enter();
+provinces.append('path')
+    .attr('class', function (d) {
+        return 'province ' + d.properties.kec_kendal;
+    })
+    .attr('d', path)
+    .on('mousemove', function (d) {
+        var mouse = d3.mouse(svg.node()).map(function (d) {
+            return parseInt(d);
+        });
+        tooltip.classed('hidden', false)
+            .attr('style', 'left:' + (mouse[0] + 15) +
+                'px; top:' + (mouse[1] - 35) + 'px')
+            .html(d.properties.NAME);
+    })
+    .on('mouseout', function () {
+        tooltip.classed('hidden', true);
+    }); -->
 </body>

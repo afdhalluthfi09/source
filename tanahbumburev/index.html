@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TANAH BUMBU | KALSEL</title>
+    <style>
+       
+       /* .line_cabang{
+           stroke: aqua;
+           fill: none;
+
+       } */
+       .line_sungai{
+           stroke: coral;
+           fill: none;
+       }
+       
+        path {
+  fill:none;
+  /* stroke: red; */
+  /* stroke-linejoin: round; */
+  stroke-width: 1.5px;
+}
+    .country{
+        fill: rgb(76, 104, 104);
+    }
+
+    #KAL_001{
+        fill: yellow;
+        /* background-color: yellow; */
+    }
+    #KAL_002{
+        fill:teal;
+    }
+
+    div.tooltip {
+        color: #222;
+        background-color: #fff;
+        padding: .5em;
+        text-shadow: #f5f5f5 0 1px 0;
+        border-radius: 2px;
+        opacity: 0.9;
+        position: absolute;
+    }
+    </style>
+</head>
+<body>
+  <h1>PETA TANAH BUMBU</h1>
+    <div id="map"></div>
+
+    <script src="http://d3js.org/d3.v4.js"></script>
+    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+    <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
+    <script src="//d3js.org/d3-tile.v0.0.min.js"></script>
+    <script src="https://d3js.org/topojson.v1.min.js"></script>
+    <script src="peta.js"></script>
+</body>
+</html>

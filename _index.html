@@ -5,13 +5,13 @@
 
 <style>
 .desa {
-  fill: #F2C06D;
-  stroke: #1800F2;
-  stroke-width:1.3px;
+  fill: #cccc;
+            stroke: #3333;
+            stroke-width: 0.5;
 }
-.desa:hover {
+/* .desa:hover {
         fill: #666;
-    }
+    } */
 div.tooltip {
      color: #222;
      background-color: #fff;
@@ -21,17 +21,23 @@ div.tooltip {
      opacity: 0.9;
      position: absolute;
 }
+svg{
+            background-color: #efefee;
+    }
  .hidden {
         display: none;
  }
+ .selected{
+            fill: yellow;
+        }
 </style>
 
 <body>
 <div id="peta"></div>
 
 <script>
-var tinggi= 450,
-    lebar = 550,
+var tinggi= 750,
+    lebar = 1020,
     active = d3.select(null);
 
 var svg = d3.select("#peta").append("svg")
@@ -43,7 +49,7 @@ var fill = d3.scale.threshold()
     .range(colorbrewer.Reds[7]);
 
 var proyeksi = d3.geo.mercator()
-  .center([110.18,-7.03])
+  .center([110.38127,-7.82393])
   .scale(60000)
   .translate([lebar/2, tinggi/2])
 
@@ -94,7 +100,18 @@ function reset() {
 function stopped() {
   if (d3.event.defaultPrevented) d3.event.stopPropagation();
 }
+function reset() {
+  active.classed("active", false);
+  active = d3.select(null);
 
+  svg.transition()
+      .duration(750)
+      .call(zoom.translate([0, 0]).scale(1).event);
+}
+
+function stopped() {
+  if (d3.event.defaultPrevented) d3.event.stopPropagation();
+}
 var path = d3.geo.path()
   .projection(proyeksi);
 var tooltip = d3.select('body').append('div')
@@ -102,22 +119,45 @@ var tooltip = d3.select('body').append('div')
 
 var g = svg.append("g");
 
-d3.json("map.topojson", function(err, kendal){
-  console.log(kendal)
+d3.json("map.json", function(err, kendal){
+  // console.log(kendal)
+  var kab =topojson.feature(kendal, kendal.objects.collection).features;
+  // console.log(kab)
   g.selectAll("path")
-    .data(topojson.feature(kendal, kendal.objects.collection).features)
+    .data(kab)
     .enter().append("path")
     .attr("class","desa")
-    // .attr("id",function(d){return d.properties.kode_kec})
+    .attr("id",function(d){return d.properties.ID_KAB})
     .attr("d", path)
-    // .on("click",clicked)
+    .on("mouseover",function(d){
+        // console.log(d)
+        d3.select(this).classed('selected',true)
+    })
+    .on("mousemove",function(d){
+        // console.log(d)      
+      var mouse = d3.mouse(svg.node()).map(function(d){
+                return parseInt(d)
+            })
+            // console.log(mouse)
+            tooltip.classed('hidden', false)
+                  .attr('style', 'left:' + (mouse[0] + 15) +
+                            'px; top:' + (mouse[1] - 35) + 'px')
+                        .html([d.properties.KAB_KOTA,d.properties.ID_KAB]);
+      })
+    .on("mouseout",function(d){
+        // console.log(d)
+        d3.select(this).classed('selected',false)
+        tooltip.classed('hidden', true);
+    })
+  //   // .on("click",clicked)
 });
   
 d3.csv('data.csv', function(d){
+    console.log(d)
   d.forEach(function(i){
-    d3.select("#"+i.kode_kec).style('fill',fill(i.jumlah)).attr('title',i.jumlah);
-    //$("#"+i.kode_kec).css('fill',fill(i.jumlah));
-    //document.getElementById(i.kode_kec).style.fill=fill(i.jumlah);
+    // d3.select("#" + i.kode_kec).style('fill',fill(i.jumlah)).attr('title',i.jumlah);
+    // $("#"+i.kode_kec).css('fill',fill(i.jumlah));
+    document.getElementById(i.kode_kec).style.fill=fill(i.jumlah);
   })
 });
 </script>

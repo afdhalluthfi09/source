@@ -1,0 +1,11 @@
+.wrapper{
+    height: 100vw;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+#render-map{
+    width: 560px;
+    height: 350px;
+    background-color: #fefefe;
+}
